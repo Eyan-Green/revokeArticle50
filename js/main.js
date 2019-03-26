@@ -7,14 +7,14 @@ const getPetitionData = () => {
 	.then(response => response.json())
 	.then(response => {
 		if ($("#selector").val() === "expat") {
-			loadChartData(response.data.attributes.signatures_by_country)
+			loadChartData(response.data.attributes.signatures_by_country, response.data.attributes.signature_count)
 		} else if ($("#selector").val() === "patriots") {
-			loadChartData(response.data.attributes.signatures_by_constituency)
+			loadChartData(response.data.attributes.signatures_by_constituency, response.data.attributes.signature_count)
 		}
 	})
 }
 
-const loadChartData = (petitionData) => {
+const loadChartData = (petitionData, total_signatures) => {
 	let signatures = [];
 	let countries = [];
 	
@@ -27,9 +27,9 @@ const loadChartData = (petitionData) => {
 
 	const reducer = (accumulator, currentValue) => accumulator + currentValue;
 	if ($("#selector").val() === "expat") {
-		$('.title').html(`Revoke Article 50 British Expats By Country. Total Signatures: ${signatures.reduce(reducer)}`)
+		$('.title').html(`Revoke Article 50 British Expats By Country: ${signatures.reduce(reducer)}. Total Signatures: ${total_signatures}`)
 	} else if ($("#selector").val() === "patriots") {
-		$('.title').html(`Revoke Article 50 UK Based Citizens. Total Signatures: ${signatures.reduce(reducer)}`)
+		$('.title').html(`Revoke Article 50 UK Based Citizens: ${signatures.reduce(reducer)}. Total Signatures: ${total_signatures}`)
 	}
 	let data = [{
 	  values: signatures,
@@ -46,7 +46,7 @@ const loadChartData = (petitionData) => {
 	  }
 	};
 		
-	Plotly.newPlot('chart', data, layout);
+	Plotly.newPlot('chart', data, layout, {responsive: true});
 }
 
 getPetitionData();
