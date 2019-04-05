@@ -1,14 +1,15 @@
-const petitionUrl = "https://petition.parliament.uk/petitions/241584.json"
+const revokeUrl = "https://petition.parliament.uk/petitions/241584.json"
+const leaveUrl = "https://petition.parliament.uk/petitions/229963.json"
 
-const getPetitionData = () => {
-	fetch(petitionUrl, {
-		method: 'GET'
-	})
+const getPetitionData = (url) => {
+		fetch(url, {
+			method: 'GET'
+		})
 	.then(response => response.json())
 	.then(response => {
-		if ($("#selector").val() === "expat") {
+		if ($("#citizenSelector").val() === "expat") {
 			loadChartData(response.data.attributes.signatures_by_country, response.data.attributes.signature_count)
-		} else if ($("#selector").val() === "patriots") {
+		} else if ($("#citizenSelector").val() === "patriots") {
 			loadChartData(response.data.attributes.signatures_by_constituency, response.data.attributes.signature_count)
 		}
 	})
@@ -26,10 +27,14 @@ const loadChartData = (petitionData, total_signatures) => {
 	})
 
 	const reducer = (accumulator, currentValue) => accumulator + currentValue;
-	if ($("#selector").val() === "expat") {
+	if ($("#citizenSelector").val() === "expat" && $("#petitionSelector").val() === "revoke") {
 		$('.title').html(`Revoke Article 50 British Expats By Country: ${signatures.reduce(reducer)}. Total Signatures: ${total_signatures}`)
-	} else if ($("#selector").val() === "patriots") {
+	} else if ($("#citizenSelector").val() === "patriots" && $("#petitionSelector").val() === "revoke") {
 		$('.title').html(`Revoke Article 50 UK Based Citizens: ${signatures.reduce(reducer)}. Total Signatures: ${total_signatures}`)
+	} else if ($("#citizenSelector").val() === "patriots" && $("#petitionSelector").val() === "leave") {
+		$('.title').html(`Leave With No Deal UK Based Citizens: ${signatures.reduce(reducer)}. Total Signatures: ${total_signatures}`)
+	}else if ($("#citizenSelector").val() === "expat" && $("#petitionSelector").val() === "leave") {
+		$('.title').html(`Leave With No Deal British Expats By Country: ${signatures.reduce(reducer)}. Total Signatures: ${total_signatures}`)
 	}
 	let data = [{
 	  values: signatures,
@@ -39,8 +44,7 @@ const loadChartData = (petitionData, total_signatures) => {
 	}];
 
 	let layout = {
-	  height: 1150,
-	  width: 1800,
+	  height: 900,
 	  legend: {
 	  	sort: false
 	  }
@@ -49,8 +53,20 @@ const loadChartData = (petitionData, total_signatures) => {
 	Plotly.newPlot('chart', data, layout, {responsive: true});
 }
 
-getPetitionData();
+getPetitionData(revokeUrl);
 
-$("#selector").change(() => {
-	getPetitionData();
+$("#citizenSelector").change(() => {
+	if ($("#petitionSelector").val() === "revoke") {
+		getPetitionData(revokeUrl);
+	} else {
+		getPetitionData(leaveUrl);
+	}
+})
+
+$("#petitionSelector").change(() => {
+	if ($("#petitionSelector").val() === "revoke") {
+		getPetitionData(revokeUrl);
+	} else {
+		getPetitionData(leaveUrl);
+	}
 }) 
