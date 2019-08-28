@@ -1,5 +1,6 @@
 const revokeUrl = "https://petition.parliament.uk/petitions/241584.json"
 const leaveUrl = "https://petition.parliament.uk/petitions/229963.json"
+const noProrogue = "https://petition.parliament.uk/petitions/269157.json"
 
 const getPetitionData = (url) => {
 		fetch(url, {
@@ -33,8 +34,12 @@ const loadChartData = (petitionData, total_signatures) => {
 		$('.title').html(`Revoke Article 50 UK Based Citizens: ${signatures.reduce(reducer)}. Total Signatures: ${total_signatures}`)
 	} else if ($("#citizenSelector").val() === "patriots" && $("#petitionSelector").val() === "leave") {
 		$('.title').html(`Leave With No Deal UK Based Citizens: ${signatures.reduce(reducer)}. Total Signatures: ${total_signatures}`)
-	}else if ($("#citizenSelector").val() === "expat" && $("#petitionSelector").val() === "leave") {
+	}	else if ($("#citizenSelector").val() === "expat" && $("#petitionSelector").val() === "leave") {
 		$('.title').html(`Leave With No Deal British Expats By Country: ${signatures.reduce(reducer)}. Total Signatures: ${total_signatures}`)
+	} else if ($("#citizenSelector").val() === "expat" && $("#petitionSelector").val() === "prorogue") {
+		$('.title').html(`Do Not Prorogue Parliament Expats By Country: ${signatures.reduce(reducer)}. Total Signatures: ${total_signatures}`)
+	} else if ($("#citizenSelector").val() === "patriots" && $("#petitionSelector").val() === "prorogue") {
+		$('.title').html(`Do Not Prorogue Parliament UK Based Citizens: ${signatures.reduce(reducer)}. Total Signatures: ${total_signatures}`)
 	}
 	let data = [{
 	  values: signatures,
@@ -58,15 +63,19 @@ getPetitionData(revokeUrl);
 $("#citizenSelector").change(() => {
 	if ($("#petitionSelector").val() === "revoke") {
 		getPetitionData(revokeUrl);
-	} else {
+	} else if ($("#petitionSelector").val() === "leave") {
 		getPetitionData(leaveUrl);
+	} else if ($("#petitionSelector").val() === "prorogue") {
+		getPetitionData(noProrogue);
 	}
 })
 
 $("#petitionSelector").change(() => {
 	if ($("#petitionSelector").val() === "revoke") {
 		getPetitionData(revokeUrl);
-	} else {
+	} else if ($("#petitionSelector").val() === "leave") {
 		getPetitionData(leaveUrl);
+	} else if ($("#petitionSelector").val() === "prorogue") {
+		getPetitionData(noProrogue);
 	}
 }) 
